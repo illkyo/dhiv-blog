@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+<!-- Site Header & Nav -->
+<header class="site-header">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-nav fixed-top">
+    <div class="container">
+      <a class="navbar-brand me-4" href="{% url 'blog-homepage' %}">
+        <img src="{% static 'imgs/Maldives_Flag.png' %}" alt="Maldivian Flag">
+        ދިވް
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarToggle">
+        <div class="navbar-nav me-auto align-items-start">
+          <a class="nav-item nav-link" href={% url 'blog-homepage' %}>މައި ޞަފްޙާ</a>
+          <a class="nav-item nav-link" href={% url 'blog-aboutpage' %}>ސައިޓް އާ ބެހޭަ މައުލޫމާތު</a>
+        </div>
+        {% if user.is_authenticated %}
+        <div class="navbar-nav align-items-start">
+          <button class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#profileModal">އެކައުންޓް</button>
+          <button class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal">އެކައުންޓުން ލޮގްއައުޓް ވުމަށް</button>
+        </div>
+        
+        {% else %}
+        <div class="navbar-nav align-items-start">
+          <button class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#loginModal">އެކައުންޓައް ލޮގް ވުމަށް</button>
+          <button class="nav-item nav-link fs-" data-bs-toggle="modal" data-bs-target="#registerModal">އާ އެކައުންޓެއް ހެއްދެވުމަށް</button>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="loginModalLabel">Login</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <form method=POST>
+        <div class="modal-body">
+          <div class="form-floating">
+            {% csrf_token %}
+            {{ login_form|crispy }}
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <small class="btn btn-link btn-sm me-auto" data-bs-toggle="modal" data-bs-target="#registerModal">Need To Make An Account?</small>
+          <button class="btn btn-danger btn-sm" type="submit" name="submit" value="log_in">Log In</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<!-- Register Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="registerModalLabel">Register Now</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <form method=POST>
+        <div class="modal-body">
+          <div class="form-floating">
+            {% csrf_token %}
+            {{ reg_form|crispy }}
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <small class="btn btn-link btn-sm me-auto" data-bs-toggle="modal" data-bs-target="#loginModal">Already Have An Account?</small>
+          <button class="btn btn-success btn-sm" type="submit" name="submit" value="sign_up">Sign Up</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<!-- Logout Modal -->
+<div class="modal modal-sm fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-pill">
+
+      {% comment %} <div class="modal-header">
+        <h1 class="modal-title fs-5" id="logoutModalLabel">Confirm</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div> {% endcomment %}
+
+      <div class="modal-body d-flex justify-content-evenly fs-5">
+        Are You Sure?
+        <form method=POST>
+          {% csrf_token %}
+          <button class="ms-5 btn btn-outline-secondary rounded-4" type="submit" name="submit" value="log_out">Yes</button>
+        </form>
+      </div>
+
+      {% comment %} <div class="modal-footer">
+        <button class="btn btn-danger" type="submit" name="submit" value="log_out">Yes</button>
+      </div> {% endcomment %}
+
+    </div>
+  </div>
+</div>
+
+<!-- Profile Modal -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="profileModalLabel">{{ user.username }}'s Profile</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <h1>{{ user.username }}</h1>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-success btn-sm" type="submit" name="submit" value="">Save Changes</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Site Main Content -->
+<main role="main" class="container">
+  <div class="row">
+    <div class="col-md-8">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% block content %}{% endblock content %}
+    </div>
+    <div class="col-md-4">
+      <div class="content-section">
+        <h3>Our Sidebar</h3>
+        <p class='text-muted'>You can put any information here you'd like.
+          <ul class="list-group">
+            <li class="list-group-item list-group-item-light">Latest Posts</li>
+            <li class="list-group-item list-group-item-light">Announcements</li>
+            <li class="list-group-item list-group-item-light">Calendars</li>
+            <li class="list-group-item list-group-item-light">etc</li>
+          </ul>
+        </p>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock body %}

@@ -1,18 +1,18 @@
 {% extends "blog/blog_base.html" %}
 
 {% block title %}
-މައި ޞަފްޙާ
+މައި ޞަފުޙާ
 {% endblock %}
 
 {% block content %}
   {% for post in posts %}
-  <article class="media content-section">
+  <article class="media content-section" dir="rtl">
     <div class="media-body">
       <div class="article-metadata">
-        <a class="me-2" href="#">{{ post.author }}</a>
-        <small class="text-muted">{{ post.date_posted|date:"d M Y" }}</small>
+        <a href="#">{{ post.author }}</a>
+        <small class="text-muted">{{ post.date_posted|date:"Y M d" }}</small>
       </div>
-      <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
+      <h2 class="my-3"><a class="article-title" href="#">{{ post.title }}</a></h2>
       <p class="article-content">{{ post.content }}</p>
     </div>
   </article>

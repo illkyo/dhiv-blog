@@ -22,13 +22,13 @@
         {% if user.is_authenticated %}
         <div class="navbar-nav align-items-start">
           <button class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#profileModal">އެކައުންޓް</button>
-          <button class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal">އެކައުންޓުން ލޮގްއައުޓް ވުމަށް</button>
+          <button class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal">ލޮގްއައުޓް</button>
         </div>
         
         {% else %}
         <div class="navbar-nav align-items-start">
-          <button class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#loginModal">އެކައުންޓައް ލޮގް ވުމަށް</button>
-          <button class="nav-item nav-link fs-" data-bs-toggle="modal" data-bs-target="#registerModal">އާ އެކައުންޓެއް ހެއްދެވުމަށް</button>
+          <button class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#loginModal">ލޮގްއިން</button>
+          <button class="nav-item nav-link fs-" data-bs-toggle="modal" data-bs-target="#registerModal">ރެޖިސްޓަރ</button>
         </div>
         {% endif %}
 
@@ -42,22 +42,22 @@
   <div class="modal-dialog">
     <div class="modal-content">
 
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="loginModalLabel">Login</h1>
+      <div class="modal-header justify-content-between">
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h1 class="modal-title fs-5" id="loginModalLabel">ލޮގްއިން</h1>
       </div>
 
       <form method=POST>
         <div class="modal-body">
-          <div class="form-floating">
+          <div class="form-floating" dir="rtl">
             {% csrf_token %}
             {{ login_form|crispy }}
           </div>
         </div>
 
         <div class="modal-footer">
-          <small class="btn btn-link btn-sm me-auto" data-bs-toggle="modal" data-bs-target="#registerModal">Need To Make An Account?</small>
-          <button class="btn btn-danger btn-sm" type="submit" name="submit" value="log_in">Log In</button>
+          <small class="btn btn-link btn-sm me-auto" data-bs-toggle="modal" data-bs-target="#registerModal">އާ އެކައުންޓެއް ހެއްދެވުމަށް</small>
+          <button class="btn btn-danger btn-sm" type="submit" name="submit" value="log_in">އެކައުންޓަށް ލޮގްއިން ވުމަށް</button>
         </div>
       </form>
 
@@ -70,22 +70,22 @@
   <div class="modal-dialog">
     <div class="modal-content">
 
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="registerModalLabel">Register Now</h1>
+      <div class="modal-header justify-content-between">
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h1 class="modal-title fs-5" id="registerModalLabel">ރެޖިސްޓަރ</h1>
       </div>
 
       <form method=POST>
         <div class="modal-body">
-          <div class="form-floating">
+          <div class="form-floating" dir="rtl">
             {% csrf_token %}
             {{ reg_form|crispy }}
           </div>
         </div>
 
         <div class="modal-footer">
-          <small class="btn btn-link btn-sm me-auto" data-bs-toggle="modal" data-bs-target="#loginModal">Already Have An Account?</small>
-          <button class="btn btn-success btn-sm" type="submit" name="submit" value="sign_up">Sign Up</button>
+          <small class="btn btn-link btn-sm me-auto" data-bs-toggle="modal" data-bs-target="#loginModal">އެކައުންޓަކަށް ލޮގްއިން ވުމަށް</small>
+          <button class="btn btn-success btn-sm" type="submit" name="submit" value="sign_up">އެކައުންޓް ރެޖިސްޓަރ ކުރެއްވުމަށް</button>
         </div>
       </form>
 
@@ -103,12 +103,12 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div> {% endcomment %}
 
-      <div class="modal-body d-flex justify-content-evenly fs-5">
-        Are You Sure?
+      <div class="modal-body d-flex justify-content-around align-items-center">
         <form method=POST>
           {% csrf_token %}
-          <button class="ms-5 btn btn-outline-secondary rounded-4" type="submit" name="submit" value="log_out">Yes</button>
+          <button class="btn btn-outline-secondary rounded-5 btn-lg" type="submit" name="submit" value="log_out">ލައްބަ</button>
         </form>
+        <h2>ޔަގީންތޯ؟</h2>
       </div>
 
       {% comment %} <div class="modal-footer">
@@ -124,17 +124,17 @@
   <div class="modal-dialog">
     <div class="modal-content">
 
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="profileModalLabel">{{ user.username }}'s Profile</h1>
+      <div class="modal-header justify-content-between">
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h1 class="modal-title fs-5" id="profileModalLabel">{{ user.username }} ގެ ޕްރޮފައިލް</h1>
       </div>
 
-      <div class="modal-body">
+      <div class="modal-body" dir="rtl">
         <h1>{{ user.username }}</h1>
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-success btn-sm" type="submit" name="submit" value="">Save Changes</button>
+        <button class="btn btn-success btn-sm" type="submit" name="submit" value="">ބަދަލުތައް ޔަގީން ކޮއްލެވުމަށް</button>
       </div>
 
     </div>

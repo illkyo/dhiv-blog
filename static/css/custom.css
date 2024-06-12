@@ -3,7 +3,6 @@
   src: url(../fonts/Faruma.otf);
 }
 
-
 body {
   background: #fafafa;
   color: #333333;
@@ -24,6 +23,14 @@ ul {
     max-width: 1000px;
   }
 } */
+
+.asteriskField {
+  display: none;
+}
+
+.modal-header .btn-close {
+  margin: 0;
+}
 
 .list-group-item{
   padding: 15px;

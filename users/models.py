@@ -1,9 +1,31 @@
-# from django.db import models
-# from django.contrib.auth.models import AbstractBaseUser
-# from django.core.validators import RegexValidator
+import re
 
-# class User(AbstractBaseUser):
-#   regex_validator = RegexValidator(r"^[\w.@+-]+$", "Username does not comply")
-#   username = models.CharField(max_length=150, validators=[regex_validator], unique=True, help_text='Required. 150 characters or fewer.')
-  
-#   USERNAME_FIELD = "username"
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.utils.translation import gettext_lazy as _
+from django.core import validators
+from django.utils.deconstruct import deconstructible
+
+@deconstructible
+class DhivehiUsernameValidator(validators.RegexValidator):
+    regex = r"^[\w\u0780-\u07BF.@+-]+\Z"
+    message = _(
+        "ޔޫސަރނަމެއް ޖައްސަވާ. 150 އަކުރައް ވުރެއް ކުރު. ހަމަ އެކަނި ޖެއްސެވޭނީ ތާނަ އަކުރު، ނަންބަރ ޑިޖިޓް ނުވަތަ _/-/+/./@"
+    )
+    flags = 0
+    
+username_validator = DhivehiUsernameValidator
+
+class User(AbstractUser):
+    username = models.CharField(
+        _("ޔޫސަރނަން"),
+        max_length=150,
+        unique=True,
+        help_text=_(
+            "ޔޫސަރނަމެއް ޖައްސަވާ. 150 އަކުރައް ވުރެއް ކުރު. ހަމަ އެކަނި ޖެއްސެވޭނީ ތާނަ އަކުރު، ނަންބަރ ޑިޖިޓް ނުވަތަ _/-/+/./@" 
+        ),
+        validators=[username_validator],
+        error_messages={
+            "unique": _("ތި ނަން ވަނީ ނަންގަވާފައި"),
+        },
+    )

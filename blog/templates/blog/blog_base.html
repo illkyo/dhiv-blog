@@ -21,10 +21,9 @@
         </div>
         {% if user.is_authenticated %}
         <div class="navbar-nav align-items-start">
-          <button class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#profileModal">އެކައުންޓް</button>
+          <a class="nav-item nav-link" href={% url 'blog-profilepage' %} >ޕްރޮފައިލް</a>
           <button class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal">ލޮގްއައުޓް</button>
         </div>
-        
         {% else %}
         <div class="navbar-nav align-items-start">
           <button class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#loginModal">ލޮގްއިން</button>
@@ -120,7 +119,7 @@
 </div>
 
 <!-- Profile Modal -->
-<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+{% comment %} <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
 
@@ -139,11 +138,11 @@
 
     </div>
   </div>
-</div>
+</div> {% endcomment %}
 
 
 <!-- Site Main Content -->
-<main role="main" class="container">
+<main role="main" class="container" dir="rtl">
   <div class="row">
     <div class="col-md-8">
       {% if messages %}
@@ -159,7 +158,7 @@
       <div class="content-section">
         <h3>Our Sidebar</h3>
         <p class='text-muted'>You can put any information here you'd like.
-          <ul class="list-group">
+          <ul class="list-group pe-0 ms-2">
             <li class="list-group-item list-group-item-light">Latest Posts</li>
             <li class="list-group-item list-group-item-light">Announcements</li>
             <li class="list-group-item list-group-item-light">Calendars</li>

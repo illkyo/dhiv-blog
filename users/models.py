@@ -32,7 +32,26 @@ class User(AbstractUser):
     
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(default='default.jpg', upload_to='pfps')
+    image = models.ImageField(upload_to='pfps', blank=True)
+    
+    def set_default_pfp(self):
+        
+        dhiv_akuru = ['ހ', 'ށ', 'ނ', 'ރ', 'ބ', 'ޅ', 'ކ', 'އ', 'ވ', 'މ', 'ފ', 'ދ', 'ތ', 'ލ', 'ގ', 'ޏ', 'ސ', 'ޑ', 'ޒ', 'ޓ', 'ޔ', 'ޕ', 'ޖ', 'ޗ']
+        
+        if self.user.username[0] in dhiv_akuru:
+            self.image = f'defaults/{self.user.username[0]}.jpg'
+        else:
+            self.image = "default.jpg"
+        
+        # if self.user.username[0] == 'ހ':
+        #     self.image = 'defaults/ހ.jpg'
+        # if self.user.username[0] == 'ށ':
+        #     self.image = 'defaults/ށ.jpg'
+                
+    def save(self, *args, **kwargs):
+        if not self.image:
+            self.set_default_pfp()
+        super().save(*args, **kwargs)
     
     def __str__(self):
         return f'{self.user.username} ގެ ޕްރޮފައިލް'

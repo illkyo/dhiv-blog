@@ -8,7 +8,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-nav fixed-top">
     <div class="container">
       <a class="navbar-brand me-4" href="{% url 'blog-homepage' %}">
-        <img src="{% static 'imgs/Maldives_Flag.png' %}" alt="Maldivian Flag">
+        <img src="{% static 'brand/Maldives_Flag.png' %}" alt="Maldivian Flag">
         ދިވް
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,7 +22,7 @@
         {% if user.is_authenticated %}
         <div class="navbar-nav align-items-start">
           <button class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal">ލޮގްއައުޓް</button>
-          <a class="nav-item nav-link" href={% url 'users-profilepage' %} >ޕްރޮފައިލް</a>
+          <a class="nav-item nav-link" href={% url 'users-profilepage' %}>ޕްރޮފައިލް</a>
         </div>
         {% else %}
         <div class="navbar-nav align-items-start">

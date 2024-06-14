@@ -16,11 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-# from users import views as user_views
+from users import views as user_views
+from blog import views as blog_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('__reload__/', include('django_browser_reload.urls')),
-    path('', include('blog.urls')),
+    path('', blog_views.Home.as_view(), name='blog-homepage'),
+    path('about/', blog_views.About.as_view(), name='blog-aboutpage'),
+    path('profile/', user_views.Profile.as_view(), name='users-profilepage'),
     # path('register/', user_views.register, name='register'),
 ]

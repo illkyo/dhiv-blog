@@ -1,0 +1,25 @@
+{% extends "blog/blog_base.html" %}
+
+{% block title %}
+ޕްރޮފައިލް
+{% endblock %}
+
+{% block content %}
+<div class="content-section">
+  <div class="media">
+    <h2 class="account-heading">{{ user.username }}</h2>
+    <img class="rounded-circle account-img border border-secondary" src="{{ user.profile.image.url }}">
+  </div>
+  {% comment %} <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <fieldset class="form-group">
+          <legend class="border-bottom mb-4">Profile Info</legend>
+          {{ u_form|crispy }}
+          {{ p_form|crispy }}
+      </fieldset>
+      <div class="form-group">
+          <button class="btn btn-outline-info" type="submit">Update</button>
+      </div>
+  </form> {% endcomment %}
+</div>
+{% endblock content %}

@@ -114,10 +114,9 @@ a.article-title:hover {
 .account-img {
   height: 125px;
   width: 125px;
-  margin-right: 20px;
-  margin-bottom: 16px;
+  margin: 40px 0 16px 0;
 }
 
-.account-heading {
+/* .account-heading {
   font-size: 2.5rem;
-}
+} */

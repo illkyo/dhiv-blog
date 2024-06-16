@@ -1,10 +1,8 @@
-import unicodedata
-
 from django.utils.translation import gettext_lazy as _
 from django import forms
 from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UsernameField
-from .models import User
+from .models import User, Profile
 
 class RegisterForm(UserCreationForm):
 
@@ -45,3 +43,23 @@ class LoginForm(AuthenticationForm):
         ),
         "inactive": _("This account is inactive."),
     }
+ 
+class UserUpdateForm(forms.ModelForm):
+    
+	class Meta:
+		model = User
+		fields = ['username']
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.fields['username'].help_text = ('')
+         
+    
+class ProfileUpdateForm(forms.ModelForm):
+    
+    class Meta:
+        model = Profile
+        exclude = ['user']
+        widgets = {
+			'bio': forms.Textarea(),
+		}

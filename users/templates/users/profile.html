@@ -6,10 +6,27 @@
 
 {% block content %}
 <div class="content-section">
-  <div class="media">
-    <h2 class="account-heading">{{ user.username }}</h2>
-    <img class="rounded-circle account-img border border-secondary" src="{{ user.profile.image.url }}">
+  <div class="media d-flex position-relative">
+    <h3 class="account-heading position-absolute">{{ user.username }}</h3>
+    <div>
+      <img class="rounded-circle account-img border border-secondary" src="{{ user.profile.image.url }}">
+    </div>
+    <p class="align-self-center p-3 mt-5">{{ user.profile.bio }}</p>
+    <div class="position-absolute top-0 start-0 mt-1">
+      <button class="btn btn-outline-dark btn-sm rounded-5" data-bs-toggle="modal" data-bs-target="#changeProfModal" style="font-size: x-small;">ޕްރޮފައިލް ބަދަލު</button>
+    </div>
   </div>
+  {% for post in user_posts %}
+  <article class="media content-section">
+    <div class="media-body">
+      <div class="article-metadata">
+        <small class="text-muted">{{ post.date_posted|date:"Y M d" }}</small>
+      </div>
+      <h2 class="my-3"><a class="article-title" href="#">{{ post.title }}</a></h2>
+      <p class="article-content">{{ post.content }}</p>
+    </div>
+  </article>
+  {% endfor %}
   {% comment %} <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       <fieldset class="form-group">

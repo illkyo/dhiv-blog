@@ -118,8 +118,8 @@
   </div>
 </div>
 
-<!-- Profile Modal -->
-{% comment %} <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+<!-- Change Profile Modal -->
+<div class="modal fade" id="changeProfModal" tabindex="-1" aria-labelledby="changeProfileModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
 
@@ -128,17 +128,23 @@
         <h1 class="modal-title fs-5" id="profileModalLabel">{{ user.username }} ގެ ޕްރޮފައިލް</h1>
       </div>
 
-      <div class="modal-body" dir="rtl">
-        <h1>{{ user.username }}</h1>
-      </div>
+      <form method="POST" enctype="multipart/form-data">
+        <div class="modal-body">
+          {% csrf_token %}
+          <fieldset class="form-group" dir="rtl">
+              {{ u_form|crispy }}
+              {{ p_form|crispy }}
+          </fieldset>
+        </div>
 
-      <div class="modal-footer">
-        <button class="btn btn-success btn-sm" type="submit" name="submit" value="">ބަދަލުތައް ޔަގީން ކޮއްލެވުމަށް</button>
-      </div>
+        <div class="modal-footer">
+            <button class="btn btn-success btn-sm" type="submit" name="submit" value="change_prof">ބަދަލުތައް ޔަގީން ކޮއްލުމަށް</button>
+        </div>
+      </form>
 
     </div>
   </div>
-</div> {% endcomment %}
+</div>
 
 
 <!-- Site Main Content -->

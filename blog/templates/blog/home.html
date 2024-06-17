@@ -6,8 +6,9 @@
 
 {% block content %}
   {% for post in posts %}
-  <article class="media content-section">
-    <div class="media-body">
+  <article class="media content-section d-flex flex-row">
+    <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+    <div class="media body me-4 flex-fill">
       <div class="article-metadata">
         <a href="#">{{ post.author }}</a>
         <small class="text-muted">{{ post.date_posted|date:"Y M d" }}</small>

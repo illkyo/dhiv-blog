@@ -10,5 +10,8 @@ class Post(models.Model):
   content = models.TextField()
   date_posted = models.DateTimeField(default=timezone.now())
   
+  class Meta:
+    ordering = ['-date_posted']
+  
   def __str__(self):
     return self.title

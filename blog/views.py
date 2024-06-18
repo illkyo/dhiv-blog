@@ -5,9 +5,11 @@ from users.forms import RegisterForm, LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views import View
+# from django.views.generic import ListView
 
 class Home(View):
     
+    template_name = 'blog/home.html'
     posts =  Post.objects.all()
     reg_form = RegisterForm()
     login_form = LoginForm()
@@ -19,7 +21,7 @@ class Home(View):
         }
     
     def get(self, request):
-        return render(request, 'blog/home.html', self.context)
+        return render(request, self.template_name, self.context)
     
     def post(self, request):
         if request.POST.get('submit') == 'sign_up':
@@ -38,19 +40,28 @@ class Home(View):
                 return redirect('blog-homepage')
             else:
                 messages.warning(request, f'Account was not created. Please try again')
-                return render(request, 'blog/home.html', reg_context)
+                return render(request, self.template_name, reg_context)
                 
         if request.POST.get('submit') == 'log_in':
+            login_form_fill = LoginForm(request.POST)
+            
+            login_context = {
+                'posts': self.posts,
+                'reg_form': self.reg_form,
+                'login_form': login_form_fill,
+            }
+            
             username = request.POST["username"]
             password = request.POST["password"]
             user = authenticate(request, username=username, password=password)
             
             if user is not None:
                 login(request, user)
+                messages.success(request, f'ލޮގް އިން ވެވިއްޖެ')
                 return redirect('blog-homepage')
             else:
                 messages.warning(request, f'Invalid Login')
-                return redirect('blog-homepage')
+                return render(request, self.template_name, login_context)
                 
         if request.POST.get('submit') == 'log_out':
             logout(request)
@@ -58,6 +69,7 @@ class Home(View):
         
 class About(View):
     
+    template_name = 'blog/about.html'
     reg_form = RegisterForm()
     login_form = LoginForm()
     
@@ -67,7 +79,7 @@ class About(View):
         }
     
     def get(self, request):
-        return render(request, 'blog/about.html', self.context)
+        return render(request, self.template_name, self.context)
     
     def post(self, request):
         if request.POST.get('submit') == 'sign_up':
@@ -85,7 +97,7 @@ class About(View):
                 return redirect('blog-aboutpage')
             else:
                 messages.warning(request, f'Account was not created. Please try again')
-                return render(request, 'blog/about.html', reg_context)
+                return render(request, self.template_name, reg_context)
                 
         if request.POST.get('submit') == 'log_in':
             username = request.POST["username"]
@@ -285,3 +297,52 @@ class About(View):
 #     }
     
 #     return render(request, 'blog/about.html', context)
+
+# class Home(ListView):
+#     model = Post
+#     template_name = 'blog/home.html'
+#     context_object_name = 'posts'
+#     ordering = ['-date_posted']
+    
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context["reg_form"] = RegisterForm()
+#         context["login_form"] = LoginForm()
+#         return context
+    
+#     def post(self, request, *args, **kwargs):
+#         if request.POST.get('submit') == 'sign_up':
+#             reg_form_fill = RegisterForm(request.POST)
+
+#             if reg_form_fill.is_valid():
+#                 reg_form_fill.save()
+#                 username = reg_form_fill.cleaned_data.get('username')
+#                 messages.success(request, f'Account created for {username}!. Now you can Log In')
+#                 return redirect('blog-homepage')
+#             else:
+#                 messages.warning(request, f'Account was not created. Please try again')
+#                 context = self.get_context_data()
+#                 context['reg_form'] = reg_form_fill
+#                 return self.render_to_response(context)
+                
+#         if request.POST.get('submit') == 'log_in':
+#             login_form_fill = LoginForm(request.POST)
+            
+#             context = self.get_context_data()
+#             context['login_form'] = login_form_fill
+            
+#             username = request.POST["username"]
+#             password = request.POST["password"]
+            
+#             user = authenticate(request, username=username, password=password)
+            
+#             if user is not None:
+#                 login(request, user)
+#                 return redirect('blog-homepage')
+#             else:
+#                 messages.warning(request, f'Invalid Login')
+#                 return redirect('blog-homepage')
+                
+#         if request.POST.get('submit') == 'log_out':
+#             logout(request)
+#             return redirect('blog-homepage')

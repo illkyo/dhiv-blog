@@ -34,7 +34,7 @@ class User(AbstractUser):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(_("ޕްރޮފައިލް ފޮޓޯ"), upload_to='pfps', blank=True, null=True)
-    bio = models.CharField(_("ބަޔޯ"), max_length=500, blank=True, null=True)
+    bio = models.CharField(_("ބަޔޯ"), default='', max_length=500, blank=True, null=True)
     
     def set_default_pfp(self):
         

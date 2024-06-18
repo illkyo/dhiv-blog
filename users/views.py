@@ -40,6 +40,7 @@ class Profile(LoginRequiredMixin, View):
                 return redirect('users-profilepage')
             
             redirect('users-profilepage')
+            
         if request.POST.get('submit') == 'log_out':
             logout(request)
             return redirect('blog-homepage')

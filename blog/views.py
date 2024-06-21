@@ -5,115 +5,324 @@ from users.forms import RegisterForm, LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views import View
-# from django.views.generic import ListView
+from django.views.generic import ListView, DetailView, CreateView
 
-class Home(View):
-    
-    template_name = 'blog/home.html'
-    posts =  Post.objects.all()
-    reg_form = RegisterForm()
-    login_form = LoginForm()
-    
-    context = {
-            'posts': posts,
-            'reg_form': reg_form,
-            'login_form': login_form,
-        }
-    
-    def get(self, request):
-        return render(request, self.template_name, self.context)
-    
-    def post(self, request):
+class AuthModalMixin:
+
+    def post(self, request, *args, **kwargs):
+
+        reg_form = RegisterForm()
+        login_form = LoginForm()
+
+        if self.view_name == 'users-login':
+            self.view_name = 'blog-homepage'
+
+        if self.context_object_name == 'posts':
+            posts = Post.objects.all()
+        else:
+            posts = None
+
+        if self.context_object_name == 'post':
+            post_detail = self.get_object()
+            pk = self.kwargs.get('pk')
+        else:
+            post_detail = None
+            pk = None
+
         if request.POST.get('submit') == 'sign_up':
             reg_form_fill = RegisterForm(request.POST)
-            
+    
             reg_context = {
-                'posts': self.posts,
                 'reg_form': reg_form_fill,
-                'login_form': self.login_form,
+                'login_form': login_form,
             }
+
+            if post_detail:
+                reg_context.update({'post': post_detail})
+
+            if posts:
+                reg_context.update({'posts': posts})
 
             if reg_form_fill.is_valid():
                 reg_form_fill.save()
                 username = reg_form_fill.cleaned_data.get('username')
-                messages.success(request, f'Account created for {username}!. Now you can Log In')
-                return redirect('blog-homepage')
+                messages.success(request, f'އައް އެކައުންޓެއް ހެދިއްޖެ. ލޮގްއިން ވެލައްވާ {username}')
+                return redirect(self.view_name, pk=pk)
             else:
-                messages.warning(request, f'Account was not created. Please try again')
+                messages.warning(request, f'އެކައުންޓެއް ނުހެދުން. އަލުން ރެޖިސްޓާ ކޮއްލަވާ')
                 return render(request, self.template_name, reg_context)
                 
         if request.POST.get('submit') == 'log_in':
             login_form_fill = LoginForm(request.POST)
             
             login_context = {
-                'posts': self.posts,
-                'reg_form': self.reg_form,
+                'reg_form': reg_form,
                 'login_form': login_form_fill,
             }
-            
+
+            if post_detail:
+                login_context.update({'post': post_detail})
+
+            if posts:
+                login_context.update({'posts': posts})
+
             username = request.POST["username"]
             password = request.POST["password"]
+            
             user = authenticate(request, username=username, password=password)
             
             if user is not None:
                 login(request, user)
-                messages.success(request, f'ލޮގް އިން ވެވިއްޖެ')
-                return redirect('blog-homepage')
+                messages.success(request, f'ލޮގްއިން ވެވިއްޖެ')
+                return redirect(self.view_name, pk=pk)
             else:
-                messages.warning(request, f'Invalid Login')
+                messages.warning(request, f'ލޮގްއިން ރަނގަޅެއްނޫން')
                 return render(request, self.template_name, login_context)
                 
         if request.POST.get('submit') == 'log_out':
             logout(request)
-            return redirect('blog-homepage')
+            return redirect(self.view_name, pk=pk)
         
-class About(View):
+        if request.POST.get('submit') == 'post_delete':
+            post = Post.objects.get(pk=pk)
+            post.delete()
+            return redirect('blog-homepage')
+
+class Home(AuthModalMixin, ListView):
+
+    model = Post
+    template_name = 'blog/home.html'
+    view_name = 'blog-homepage'
+    context_object_name = 'posts'
+    # ordering = ['-date_posted']
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["reg_form"] = RegisterForm()
+        context["login_form"] = LoginForm()
+        return context
+    
+    #     reg_form = RegisterForm()
+    #     login_form = LoginForm()
+
+
+    #     if request.POST.get('submit') == 'sign_up':
+    #         reg_form_fill = RegisterForm(request.POST)
+
+    #         reg_context = {
+    #             'posts' :  posts,
+    #             'reg_form': reg_form_fill,
+    #             'login_form': login_form,
+    #         }
+
+    #         if reg_form_fill.is_valid():
+    #             reg_form_fill.save()
+    #             username = reg_form_fill.cleaned_data.get('username')
+    #             messages.success(request, f'Account created for {username}!. Now you can Log In')
+    #             return redirect(self.template_name)
+    #         else:
+    #             messages.warning(request, f'')
+    #             return render(request, self.template_name, reg_context)
+                
+    #     if request.POST.get('submit') == 'log_in':
+    #         login_form_fill = LoginForm(request.POST)
+            
+    #         login_context = {
+    #             'posts' :  Post.objects.all(),
+    #             'reg_form': reg_form,
+    #             'login_form': login_form_fill,
+    #         }
+
+    #         username = request.POST["username"]
+    #         password = request.POST["password"]
+            
+    #         user = authenticate(request, username=username, password=password)
+            
+    #         if user is not None:
+    #             login(request, user)
+    #             messages.success(request, f'ލޮގްއިން ވެވިއްޖެ')
+    #             return redirect('blog-homepage')
+    #         else:
+    #             messages.warning(request, f'Invalid Login')
+    #             return render(request, self.template_name, login_context)
+                
+    #     if request.POST.get('submit') == 'log_out':
+    #         logout(request)
+    #         return redirect('blog-homepage')
+        
+class About(AuthModalMixin, View):
     
     template_name = 'blog/about.html'
+    view_name = 'blog-aboutpage'
+
     reg_form = RegisterForm()
     login_form = LoginForm()
     
-    context = {
-            'reg_form': reg_form,
-            'login_form': login_form,
-        }
-    
     def get(self, request):
-        return render(request, self.template_name, self.context)
-    
-    def post(self, request):
-        if request.POST.get('submit') == 'sign_up':
-            reg_form_fill = RegisterForm(request.POST)
-            
-            reg_context = {
-                'reg_form': reg_form_fill,
-                'login_form': self.login_form,
-            }
 
-            if reg_form_fill.is_valid():
-                reg_form_fill.save()
-                username = reg_form_fill.cleaned_data.get('username')
-                messages.success(request, f'Account created for {username}!. Now you can Log In')
-                return redirect('blog-aboutpage')
-            else:
-                messages.warning(request, f'Account was not created. Please try again')
-                return render(request, self.template_name, reg_context)
-                
-        if request.POST.get('submit') == 'log_in':
-            username = request.POST["username"]
-            password = request.POST["password"]
-            user = authenticate(request, username=username, password=password)
+        context = {
+            'reg_form': self.reg_form,
+            'login_form': self.login_form,
+        }
+        return render(request, self.template_name, context)
+    
+    # def post(self, request):
+    #     if request.POST.get('submit') == 'sign_up':
+    #         reg_form_fill = RegisterForm(request.POST)
             
-            if user is not None:
-                login(request, user)
-                return redirect('blog-aboutpage')
-            else:
-                messages.warning(request, f'Invalid Login')
-                return redirect('blog-aboutpage')
+    #         reg_context = {
+    #             'reg_form': reg_form_fill,
+    #             'login_form': self.login_form,
+    #         }
+
+    #         if reg_form_fill.is_valid():
+    #             reg_form_fill.save()
+    #             username = reg_form_fill.cleaned_data.get('username')
+    #             messages.success(request, f'Account created for {username}!. Now you can Log In')
+    #             return redirect('blog-aboutpage')
+    #         else:
+    #             messages.warning(request, f'Account was not created. Please try again')
+    #             return render(request, self.template_name, reg_context)
                 
-        if request.POST.get('submit') == 'log_out':
-            logout(request)
-            return redirect('blog-aboutpage')
+    #     if request.POST.get('submit') == 'log_in':
+    #         username = request.POST["username"]
+    #         password = request.POST["password"]
+    #         user = authenticate(request, username=username, password=password)
+            
+    #         if user is not None:
+    #             login(request, user)
+    #             return redirect('blog-aboutpage')
+    #         else:
+    #             messages.warning(request, f'Invalid Login')
+    #             return redirect('blog-aboutpage')
+                
+    #     if request.POST.get('submit') == 'log_out':
+    #         logout(request)
+    #         return redirect('blog-aboutpage')
+
+class PostDetail(AuthModalMixin, DetailView):
+
+    model = Post
+    template_name = 'blog/post_detail.html'
+    view_name = 'blog-postdetail'
+    context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["reg_form"] = RegisterForm()
+        context["login_form"] = LoginForm()
+        return context
+    
+    # def post(self, request, *args, **kwargs):
+    #     detail_object = self.get_object()
+    #     pk = self.kwargs.get('pk')
+    #     reg_form = RegisterForm()
+    #     login_form = LoginForm()
+
+    #     if request.POST.get('submit') == 'sign_up':
+    #         reg_form_fill = RegisterForm(request.POST)
+
+    #         reg_context = {
+    #             'reg_form': reg_form_fill,
+    #             'login_form': login_form,
+    #             'object': detail_object,
+    #         }
+
+    #         if reg_form_fill.is_valid():
+    #             reg_form_fill.save()
+    #             username = reg_form_fill.cleaned_data.get('username')
+    #             messages.success(request, f'އައް އެކައުންޓެއް ހެދިއްޖެ. ލޮގްއިން ވެލައްވާ {username}')
+    #             return redirect(self.view_name, pk=pk)
+    #         else:
+    #             messages.warning(request, f'އެކައުންޓެއް ނުހެދުން. އަލުން ރެޖިސްޓާ ކޮއްލަވާ')
+    #             return render(request, self.template_name, reg_context)
+                
+    #     if request.POST.get('submit') == 'log_in':
+    #         login_form_fill = LoginForm(request.POST)
+            
+    #         login_context = {
+    #             'reg_form': reg_form,
+    #             'login_form': login_form_fill,
+    #             'object': detail_object,
+    #         }
+
+    #         username = request.POST["username"]
+    #         password = request.POST["password"]
+            
+    #         user = authenticate(request, username=username, password=password)
+            
+    #         if user is not None:
+    #             login(request, user)
+    #             messages.success(request, f'ލޮގްއިން ވެވިއްޖެ')
+    #             return redirect(self.view_name, pk=pk)
+    #         else:
+    #             messages.warning(request, f'ލޮގްއިން ރަނގަޅެއްނޫން')
+    #             return render(request, self.template_name, login_context)
+            
+    #     if request.POST.get('submit') == 'log_out':
+    #         logout(request)
+    #         return redirect(self.view_name, pk=pk)
+
+# class Home(View):
+    
+#     template_name = 'blog/home.html'
+#     posts =  Post.objects.all()
+#     reg_form = RegisterForm()
+#     login_form = LoginForm()
+    
+#     context = {
+#             'posts': posts,
+#             'reg_form': reg_form,
+#             'login_form': login_form,
+#         }
+    
+#     def get(self, request):
+#         return render(request, self.template_name, self.context)
+    
+#     def post(self, request):
+#         if request.POST.get('submit') == 'sign_up':
+#             reg_form_fill = RegisterForm(request.POST)
+            
+#             reg_context = {
+#                 'posts': self.posts,
+#                 'reg_form': reg_form_fill,
+#                 'login_form': self.login_form,
+#             }
+
+#             if reg_form_fill.is_valid():
+#                 reg_form_fill.save()
+#                 username = reg_form_fill.cleaned_data.get('username')
+#                 messages.success(request, f'Account created for {username}!. Now you can Log In')
+#                 return redirect('blog-homepage')
+#             else:
+#                 messages.warning(request, f'Account was not created. Please try again')
+#                 return render(request, self.template_name, reg_context)
+                
+#         if request.POST.get('submit') == 'log_in':
+#             login_form_fill = LoginForm(request.POST)
+            
+#             login_context = {
+#                 'posts': self.posts,
+#                 'reg_form': self.reg_form,
+#                 'login_form': login_form_fill,
+#             }
+            
+#             username = request.POST["username"]
+#             password = request.POST["password"]
+#             user = authenticate(request, username=username, password=password)
+            
+#             if user is not None:
+#                 login(request, user)
+#                 messages.success(request, f'ލޮގް އިން ވެވިއްޖެ')
+#                 return redirect('blog-homepage')
+#             else:
+#                 messages.warning(request, f'Invalid Login')
+#                 return render(request, self.template_name, login_context)
+                
+#         if request.POST.get('submit') == 'log_out':
+#             logout(request)
+#             return redirect('blog-homepage')
+
 
 # class Profile(View):
     
@@ -297,52 +506,3 @@ class About(View):
 #     }
     
 #     return render(request, 'blog/about.html', context)
-
-# class Home(ListView):
-#     model = Post
-#     template_name = 'blog/home.html'
-#     context_object_name = 'posts'
-#     ordering = ['-date_posted']
-    
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context["reg_form"] = RegisterForm()
-#         context["login_form"] = LoginForm()
-#         return context
-    
-#     def post(self, request, *args, **kwargs):
-#         if request.POST.get('submit') == 'sign_up':
-#             reg_form_fill = RegisterForm(request.POST)
-
-#             if reg_form_fill.is_valid():
-#                 reg_form_fill.save()
-#                 username = reg_form_fill.cleaned_data.get('username')
-#                 messages.success(request, f'Account created for {username}!. Now you can Log In')
-#                 return redirect('blog-homepage')
-#             else:
-#                 messages.warning(request, f'Account was not created. Please try again')
-#                 context = self.get_context_data()
-#                 context['reg_form'] = reg_form_fill
-#                 return self.render_to_response(context)
-                
-#         if request.POST.get('submit') == 'log_in':
-#             login_form_fill = LoginForm(request.POST)
-            
-#             context = self.get_context_data()
-#             context['login_form'] = login_form_fill
-            
-#             username = request.POST["username"]
-#             password = request.POST["password"]
-            
-#             user = authenticate(request, username=username, password=password)
-            
-#             if user is not None:
-#                 login(request, user)
-#                 return redirect('blog-homepage')
-#             else:
-#                 messages.warning(request, f'Invalid Login')
-#                 return redirect('blog-homepage')
-                
-#         if request.POST.get('submit') == 'log_out':
-#             logout(request)
-#             return redirect('blog-homepage')

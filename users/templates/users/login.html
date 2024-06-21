@@ -1,0 +1,22 @@
+{% extends "blog/blog_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+ލޮގްއިން
+{% endblock %}
+
+{% block content %}
+<div class="content-section">
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom pb-2">ލޮގްއިން</legend>
+            {{ login_form|crispy }}
+        </fieldset>
+        <div class="form-footer d-flex justify-content-between">
+            <button class="btn btn-outline-info btn-sm" type="submit" name="submit" value="log_in">އެކައުންޓަށް ލޮގްއިން ވުމަށް</button>
+            <small class="btn btn-link btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#registerModal">އާ އެކައުންޓެއް ހެއްދެވުމަށް</small>
+        </div>
+    </form>
+</div>
+{% endblock content %}

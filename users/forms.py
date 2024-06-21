@@ -4,6 +4,16 @@ from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UsernameField
 from .models import User, Profile
 
+class CustomUsernameField(UsernameField):
+
+    def widget_attrs(self, widget):
+        return {
+            **super().widget_attrs(widget),
+            "autocapitalize": "none",
+            "autocomplete": "username",
+            "dir": "auto"
+        }
+
 class RegisterForm(UserCreationForm):
 
     password1 = forms.CharField(
@@ -26,7 +36,7 @@ class RegisterForm(UserCreationForm):
     class Meta:
       model = User
       fields = ("username",)
-      field_classes = {"username": UsernameField}
+      field_classes = {"username": CustomUsernameField}
       
 class LoginForm(AuthenticationForm):
     

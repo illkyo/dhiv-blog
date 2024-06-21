@@ -77,6 +77,8 @@ WSGI_APPLICATION = 'dhiv_blog.wsgi.application'
 
 AUTH_USER_MODEL = "users.User"
 
+LOGIN_URL = 'users-login'
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 

@@ -5,21 +5,32 @@
 {% endblock %}
 
 {% block content %}
-  <article class="media content-section d-flex flex-row">
-    <img class="rounded-circle article-img border border-secondary" src="{{ post.author.profile.image.url }}">
-    <div class="media body me-4 flex-fill">
+  <article class="media content-section d-flex">
+    <div class="d-flex flex-column flex-shrink-0">
+      <img class="rounded-circle article-img border border-secondary align-self-center" src="{{ post.author.profile.image.url }}">
+      {% if user == post.author %}
+      <a class="btn btn-outline-secondary btn-sm detail-button rounded-5 mt-2" href={% url 'blog-postupdate' post.pk %}>އަޕްޑޭޓް</a>
+      <button class="btn btn-outline-danger btn-sm detail-button rounded-5 mt-2" data-bs-toggle="modal" data-bs-target="#deletePostModal">ޑިލީޓް</button>
+      {% endif %}
+    </div>
+
+    <div class="media body me-4 flex-grow-1">
       <div class="article-metadata">
-        <a href="#">{{ post.author }}</a>
+        {% if user == post.author %}
+        <a href={% url 'users-profilepage' %}>{{ post.author }}</a>
+        {% else %}
+        <a href={% url 'blog-viewprofile' post.author.username %}>{{ post.author }}</a>
+        {% endif %}
         <small class="text-muted">{{ post.date_posted|date:"Y M d" }}</small>
       </div>
       <h2 class="my-3 article-title">{{ post.title }}</h2>
       <p class="article-content">{{ post.content }}</p>
-      {% if request.user == post.author %}
+      {% comment %} {% if request.user == post.author %}
       <div class="buttons d-flex justify-content-end mt-3">
-        <a class="btn btn-outline-secondary btn-sm rounded-5 ms-5" href="#">އަޕްޑޭޓް ކޮއްލުމަށް</a>
+        <a class="btn btn-outline-secondary btn-sm rounded-5 ms-5" href={% url 'blog-postupdate' post.pk %}>އަޕްޑޭޓް ކޮއްލުމަށް</a>
         <button class="btn btn-outline-danger btn-sm rounded-5" data-bs-toggle="modal" data-bs-target="#deletePostModal">ޑިލީޓް ކޮއްލުމަށް</button>
       </div>
-      {% endif %}
+      {% endif %} {% endcomment %}
     </div>
   </article>
 {% endblock content %}

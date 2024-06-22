@@ -1,0 +1,32 @@
+{% extends "blog/blog_base.html" %}
+
+{% block title %}
+ޕްރޮފައިލް
+{% endblock %}
+
+{% block content %}
+<div class="content-section">
+  <div class="media d-flex position-relative">
+    <h3 class="account-heading position-absolute">{{ view_user.username }}</h3>
+    <div>
+      <img class="rounded-circle account-img border border-secondary" src="{{ view_user.profile.image.url }}">
+    </div>
+    <p class="align-self-center p-3 mt-5">{{ view_user.profile.bio }}</p>
+  </div>
+  {% if user_posts %}
+    {% for post in user_posts %}
+    <article class="media content-section">
+      <div class="media-body">
+        <div class="article-metadata">
+          <small class="text-muted">{{ post.date_posted|date:"Y M d" }}</small>
+        </div>
+        <h2 class="my-3"><a class="article-title" href={% url 'blog-postdetail' post.pk %}>{{ post.title }}</a></h2>
+        <p class="article-content">{{ post.content }}</p>
+      </div>
+    </article>
+    {% endfor %}
+  {% else %}
+    <h3>No Posts</h3>
+  {% endif %}
+</div>
+{% endblock content %}

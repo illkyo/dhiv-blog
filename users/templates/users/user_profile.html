@@ -22,8 +22,12 @@
       <div class="media-body">
         <div class="article-metadata">
           <small class="text-muted">{{ post.date_posted|date:"Y M d" }}</small>
+          <div>
+            <a class="btn btn-outline-secondary btn-sm rounded-5" href={% url 'blog-postupdate' post.pk %}>އަޕްޑޭޓް</a>
+            <button class="btn btn-close" data-bs-toggle="modal" data-bs-target="#deletePostModal"></button>
+          </div>
         </div>
-        <h2 class="my-3"><a class="article-title" href="#">{{ post.title }}</a></h2>
+        <h2 class="my-3"><a class="article-title" href="{% url 'blog-postdetail' post.id %}">{{ post.title }}</a></h2>
         <p class="article-content">{{ post.content }}</p>
       </div>
     </article>

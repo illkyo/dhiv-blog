@@ -1,53 +1,73 @@
-from django.shortcuts import render, redirect
-from .models import Post
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 # from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from users.forms import RegisterForm, LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views import View
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView
+from .models import Post
+from users.forms import RegisterForm, LoginForm
+from users.models import User
 
+# Kind of a mess right now will fix it up better later
 class AuthModalMixin:
 
+    reg_form = RegisterForm()
+    login_form = LoginForm()
+    
     def post(self, request, *args, **kwargs):
-
-        reg_form = RegisterForm()
-        login_form = LoginForm()
 
         if self.view_name == 'users-login':
             self.view_name = 'blog-homepage'
-
-        if self.context_object_name == 'posts':
+            
+        if type(self).__name__ == 'Home':
             posts = Post.objects.all()
         else:
             posts = None
 
-        if self.context_object_name == 'post':
+        if type(self).__name__ == 'PostDetail':
             post_detail = self.get_object()
             pk = self.kwargs.get('pk')
         else:
             post_detail = None
             pk = None
+            
+        if type(self).__name__ == 'ViewProfile':
+            view_username = self.kwargs.get('username')
+            view_user = get_object_or_404(User, username=view_username)
+            user_posts = Post.objects.filter(author=view_user)
+        else:
+            view_username = None
+            view_user = None
+            user_posts = None
 
         if request.POST.get('submit') == 'sign_up':
             reg_form_fill = RegisterForm(request.POST)
     
             reg_context = {
                 'reg_form': reg_form_fill,
-                'login_form': login_form,
+                'login_form': self.login_form,
             }
 
             if post_detail:
                 reg_context.update({'post': post_detail})
+                kwargs = {'pk': pk}
 
             if posts:
                 reg_context.update({'posts': posts})
+                
+            if type(self).__name__ == 'ViewProfile':
+                reg_context.update({
+                    'view_user' : view_user,
+                    'user_posts': user_posts,
+                                    })
 
             if reg_form_fill.is_valid():
                 reg_form_fill.save()
                 username = reg_form_fill.cleaned_data.get('username')
                 messages.success(request, f'އައް އެކައުންޓެއް ހެދިއްޖެ. ލޮގްއިން ވެލައްވާ {username}')
-                return redirect(self.view_name, pk=pk)
+                url = reverse(self.view_name, kwargs=kwargs if kwargs else {})
+                return redirect(url)
             else:
                 messages.warning(request, f'އެކައުންޓެއް ނުހެދުން. އަލުން ރެޖިސްޓާ ކޮއްލަވާ')
                 return render(request, self.template_name, reg_context)
@@ -56,15 +76,23 @@ class AuthModalMixin:
             login_form_fill = LoginForm(request.POST)
             
             login_context = {
-                'reg_form': reg_form,
+                'reg_form': self.reg_form,
                 'login_form': login_form_fill,
             }
 
             if post_detail:
                 login_context.update({'post': post_detail})
+                kwargs = {'pk': pk}
 
             if posts:
                 login_context.update({'posts': posts})
+                
+            if type(self).__name__ == 'ViewProfile':
+                login_context.update({
+                    'view_user' : view_user,
+                    'user_posts': user_posts,
+                                    })
+                kwargs = {'username': view_username}
 
             username = request.POST["username"]
             password = request.POST["password"]
@@ -74,14 +102,16 @@ class AuthModalMixin:
             if user is not None:
                 login(request, user)
                 messages.success(request, f'ލޮގްއިން ވެވިއްޖެ')
-                return redirect(self.view_name, pk=pk)
+                url = reverse(self.view_name, kwargs=kwargs if kwargs else {})
+                return redirect(url)
             else:
                 messages.warning(request, f'ލޮގްއިން ރަނގަޅެއްނޫން')
                 return render(request, self.template_name, login_context)
                 
         if request.POST.get('submit') == 'log_out':
             logout(request)
-            return redirect(self.view_name, pk=pk)
+            url = reverse(self.view_name, kwargs=kwargs if kwargs else {})
+            return redirect(url)
         
         if request.POST.get('submit') == 'post_delete':
             post = Post.objects.get(pk=pk)
@@ -89,7 +119,7 @@ class AuthModalMixin:
             return redirect('blog-homepage')
 
 class Home(AuthModalMixin, ListView):
-
+    
     model = Post
     template_name = 'blog/home.html'
     view_name = 'blog-homepage'
@@ -98,8 +128,8 @@ class Home(AuthModalMixin, ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["reg_form"] = RegisterForm()
-        context["login_form"] = LoginForm()
+        context["reg_form"] = self.reg_form
+        context["login_form"] = self.login_form
         return context
     
     #     reg_form = RegisterForm()
@@ -155,9 +185,6 @@ class About(AuthModalMixin, View):
     template_name = 'blog/about.html'
     view_name = 'blog-aboutpage'
 
-    reg_form = RegisterForm()
-    login_form = LoginForm()
-    
     def get(self, request):
 
         context = {
@@ -209,8 +236,8 @@ class PostDetail(AuthModalMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["reg_form"] = RegisterForm()
-        context["login_form"] = LoginForm()
+        context["reg_form"] = self.reg_form
+        context["login_form"] = self.login_form
         return context
     
     # def post(self, request, *args, **kwargs):
@@ -263,6 +290,25 @@ class PostDetail(AuthModalMixin, DetailView):
     #         logout(request)
     #         return redirect(self.view_name, pk=pk)
 
+class ViewProfile(AuthModalMixin, View):
+    
+    template_name = 'blog/view_profile.html'
+    view_name = 'blog-viewprofile'
+    
+    def get(self, request, *args, **kwargs):
+        
+        view_username = self.kwargs.get('username')
+        view_user = get_object_or_404(User, username=view_username)
+        user_posts = Post.objects.filter(author=view_user)
+        
+        context = {
+            'view_user' : view_user,
+            'user_posts': user_posts,
+            'reg_form': self.reg_form,
+            'login_form': self.login_form,
+        }
+        
+        return render(request, self.template_name, context)
 # class Home(View):
     
 #     template_name = 'blog/home.html'

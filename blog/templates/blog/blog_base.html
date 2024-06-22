@@ -30,7 +30,6 @@
           <button class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#registerModal">ރެޖިސްޓަރ</button>
         </div>
         {% endif %}
-
       </div>
     </div>
   </nav>
@@ -105,9 +104,9 @@
       <div class="modal-body d-flex justify-content-around align-items-center">
         <form method=POST>
           {% csrf_token %}
-          <button class="btn btn-outline-secondary rounded-5 btn-lg" type="submit" name="submit" value="log_out">ލައްބަ</button>
+          <button class="btn btn-warning rounded-5" type="submit" name="submit" value="log_out">ލައްބަ</button>
         </form>
-        <h2>ޔަގީންތޯ؟</h2>
+        <h4>ލޮގްއައުޓް ވަނީތޯ؟</h4>
       </div>
 
       {% comment %} <div class="modal-footer">
@@ -154,9 +153,9 @@
       <div class="modal-body d-flex justify-content-around align-items-center">
         <form method=POST>
           {% csrf_token %}
-          <button class="btn btn-outline-secondary rounded-5 btn-lg" type="submit" name="submit" value="post_delete">ލައްބަ</button>
+          <button class="btn btn-danger rounded-5" type="submit" name="submit" value="post_delete">ލައްބަ</button>
         </form>
-        <h2>ޔަގީންތޯ؟</h2>
+        <h5>ޕޯސްޓް ޑިލީޓް ކޮއްލަނީތޯ؟</h5>
       </div>
 
     </div>
@@ -168,16 +167,17 @@
 <main role="main" class="container" dir="rtl">
   <div class="row">
     <div class="col-md-8">
-      {% if messages %}
-        {% for message in messages %}
-          <div class="alert alert-{{ message.tags }}">
-            {{ message }}
-          </div>
-        {% endfor %}
-      {% endif %}
-      {% block content %}{% endblock content %}
+      {% block content %}
+      {% endblock content %}
     </div>
     <div class="col-md-4">
+      {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+      {% endif %}
       <div class="content-section">
         <h3>Our Sidebar</h3>
         <p class='text-muted'>You can put any information here you'd like.
@@ -188,6 +188,11 @@
             <li class="list-group-item list-group-item-light">etc</li>
           </ul>
         </p>
+        {% if user.is_authenticated %}
+        <div class="d-flex">
+          <a class="btn btn-success rounded-5 btn-lg flex-fill" href={% url 'blog-postcreate' %}>އާ ޕޯސްޓް</a>
+        </div>
+        {% endif %}
       </div>
     </div>
   </div>

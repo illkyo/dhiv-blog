@@ -21,7 +21,7 @@ class Profile(LoginRequiredMixin, View):
             'p_form': p_form,
         }
         
-        return render(request, 'users/profile.html', prof_context)
+        return render(request, 'users/user_profile.html', prof_context)
 
     def post(self, request):
         
@@ -44,9 +44,6 @@ class Login(AuthModalMixin, View):
 
     template_name = 'users/login.html'
     view_name = 'users-login'
-
-    reg_form = RegisterForm()
-    login_form = LoginForm()
     
     def get(self, request):
 
@@ -58,7 +55,7 @@ class Login(AuthModalMixin, View):
         return render(request, self.template_name, context)
     
 class PostCreate(LoginRequiredMixin, CreateView):
-
+    
     template_name = 'users/post_form.html'
     model = Post
     fields = ['title', 'content']
@@ -68,6 +65,7 @@ class PostCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
     
 class PostUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    
     template_name = 'users/post_form.html'
     model = Post
     fields = ['title', 'content']
@@ -81,13 +79,3 @@ class PostUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         if self.request.user == post.author:
             return True
         return False
-    
-# class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-
-#     model = Post
-
-#     def test_func(self):
-#         post = self.get_object()
-#         if self.request.user == post.author:
-#             return True
-#         return False

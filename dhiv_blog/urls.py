@@ -28,6 +28,7 @@ urlpatterns = [
     path('about/', blog_views.About.as_view(), name='blog-aboutpage'),
     path('login/', user_views.Login.as_view(), name='users-login'),
     path('profile/', user_views.Profile.as_view(), name='users-profilepage'),
+    path('profile/<str:username>/', blog_views.ViewProfile.as_view(), name='blog-viewprofile'),
     path('post/<int:pk>/', blog_views.PostDetail.as_view(), name='blog-postdetail'),
     path('post/new/', user_views.PostCreate.as_view(), name='blog-postcreate'),
     path('post/<int:pk>/update/', user_views.PostUpdate.as_view(), name='blog-postupdate'),

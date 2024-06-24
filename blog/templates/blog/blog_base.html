@@ -7,30 +7,30 @@
 <header class="site-header">
   <nav class="navbar navbar-expand-lg navbar-dark bg-nav fixed-top">
     <div class="container">
-      <a class="navbar-brand me-4" href="{% url 'blog-homepage' %}">
-        <img src="{% static 'brand/Maldives_Flag.png' %}" alt="Maldivian Flag">
-        ދިވް
-      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+        <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarToggle">
-        <div class="navbar-nav me-auto align-items-start">
-          <a class="nav-item nav-link" href={% url 'blog-homepage' %}>މައި ޞަފްޙާ</a>
-          <a class="nav-item nav-link" href={% url 'blog-aboutpage' %}>ސައިޓް އާ ބެހޭަ މައުލޫމާތު</a>
-        </div>
+      <div class="collapse navbar-collapse justify-content-between" id="navbarToggle">
         {% if user.is_authenticated %}
         <div class="navbar-nav align-items-start">
           <button class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal">ލޮގްއައުޓް</button>
-          <a class="nav-item nav-link" href={% url 'users-profilepage' %}>ޕްރޮފައިލް</a>
+          <a class="nav-item nav-link ms-lg-3" href={% url 'users-profilepage' %}>ޕްރޮފައިލް</a>
         </div>
         {% else %}
-        <div class="navbar-nav align-items-start">
+        <div class="navbar-nav">
           <button class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#loginModal">ލޮގްއިން</button>
-          <button class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#registerModal">ރެޖިސްޓަރ</button>
+          <button class="nav-item nav-link ms-lg-3" data-bs-toggle="modal" data-bs-target="#registerModal">ރެޖިސްޓަރ</button>
         </div>
         {% endif %}
+        <div class="navbar-nav">
+          <a class="nav-item nav-link" href={% url 'blog-aboutpage' %}>ސައިޓް އާ ބެހޭަ މައުލޫމާތު</a>
+          <a class="nav-item nav-link ms-lg-3" href={% url 'blog-homepage' %}>މައި ޞަފްޙާ</a>
+        </div>
       </div>
+      <a class="navbar-brand ms-auto ms-lg-4 me-0" href="{% url 'blog-homepage' %}">
+        ދިވް
+        <img src="{% static 'brand/Maldives_Flag.png' %}" alt="Maldivian Flag">
+      </a>
     </div>
   </nav>
 </header>

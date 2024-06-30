@@ -4,7 +4,8 @@
 }
 
 body {
-  background: #fafafa;
+  /* background: #fafafa; */
+  background: #fff8f8;
   color: #333333;
   margin-top: 5rem;
   font-family: faruma;
@@ -59,7 +60,8 @@ ul {
 }
 
 .content-section {
-  background: #ffffff;
+  /* background: #ffffff; */
+  background: #f6fbf5;
   padding: 10px 20px;
   border: 1px solid #dddddd;
   border-radius: 3px;
@@ -104,6 +106,16 @@ a.article-title:hover {
   font-size: smaller;
 }
 
+.media {
+  overflow: hidden;
+}
+
+.article-heading {
+  padding-bottom: 12px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #e3e3e3;
+}
+
 .article-svg {
   width: 25px;
   height: 25px;
@@ -118,6 +130,10 @@ a.article-title:hover {
 
 .detail-button {
   font-size: smaller;
+}
+
+.profile-button {
+  font-size: x-small;
 }
 
 /* .account-heading {

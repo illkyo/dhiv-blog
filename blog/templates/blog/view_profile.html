@@ -1,4 +1,5 @@
 {% extends "blog/blog_base.html" %}
+{% load format_date %}
 
 {% block title %}
 ޕްރޮފައިލް
@@ -18,7 +19,7 @@
     <article class="media content-section">
       <div class="media-body">
         <div class="article-metadata">
-          <small class="text-muted">{{ post.date_posted|date:"Y M d" }}</small>
+          <small class="text-muted">{{ post.date_posted|format_date }}</small>
         </div>
         <h2 class="my-3"><a class="article-title" href={% url 'blog-postdetail' post.pk %}>{{ post.title }}</a></h2>
         <p class="article-content">{{ post.content }}</p>

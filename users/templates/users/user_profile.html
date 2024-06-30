@@ -1,4 +1,5 @@
 {% extends "blog/blog_base.html" %}
+{% load format_date %}
 
 {% block title %}
 ޕްރޮފައިލް
@@ -13,7 +14,7 @@
     </div>
     <p class="align-self-center p-3 mt-5">{{ user.profile.bio }}</p>
     <div class="position-absolute top-0 start-0 mt-1">
-      <button class="btn btn-outline-dark btn-sm rounded-5" data-bs-toggle="modal" data-bs-target="#changeProfModal" style="font-size: x-small;">ޕްރޮފައިލް ބަދަލު</button>
+      <button class="btn btn-outline-success btn-sm rounded-5 profile-button" data-bs-toggle="modal" data-bs-target="#changeProfModal">ޕްރޮފައިލް ބަދަލު</button>
     </div>
   </div>
   {% if user_posts %}
@@ -21,13 +22,13 @@
     <article class="media content-section">
       <div class="media-body">
         <div class="article-metadata">
-          <small class="text-muted">{{ post.date_posted|date:"Y M d" }}</small>
-          <div>
-            <a class="btn btn-outline-secondary btn-sm rounded-5" href={% url 'blog-postupdate' post.pk %}>އަޕްޑޭޓް</a>
-            <button class="btn btn-close" data-bs-toggle="modal" data-bs-target="#deletePostModal"></button>
+          <small class="text-muted">{{ post.date_posted|format_date }}</small>
+          <div class="mb-1">
+            <a class="btn btn-outline-success btn-sm rounded-5 ms-4 profile-button" href={% url 'blog-postupdate' post.pk %}>އަޕްޑޭޓް</a>
+            <button class="btn btn-close btn-sm" data-bs-toggle="modal" data-bs-target="#deletePostModal"></button>
           </div>
         </div>
-        <h2 class="my-3"><a class="article-title" href="{% url 'blog-postdetail' post.id %}">{{ post.title }}</a></h2>
+        <h2 class="my-3"><a class="article-title" href={% url 'blog-postdetail' post.id %}>{{ post.title }}</a></h2>
         <p class="article-content">{{ post.content }}</p>
       </div>
     </article>

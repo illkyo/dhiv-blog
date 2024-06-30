@@ -1,4 +1,5 @@
 {% extends "blog/blog_base.html" %}
+{% load format_date %}
 
 {% block title %}
 ޕޯސްޓް
@@ -21,7 +22,7 @@
         {% else %}
         <a href={% url 'blog-viewprofile' post.author.username %}>{{ post.author }}</a>
         {% endif %}
-        <small class="text-muted">{{ post.date_posted|date:"Y M d" }}</small>
+        <small class="text-muted">{{ post.date_posted|format_date }}</small>
       </div>
       <h2 class="my-3 article-title">{{ post.title }}</h2>
       <p class="article-content">{{ post.content }}</p>

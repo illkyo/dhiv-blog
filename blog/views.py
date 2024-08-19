@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.views import View
 from django.views.generic import ListView, DetailView
 from .models import Post
-from users.forms import RegisterForm, LoginForm
+from users.forms import RegisterForm, LoginForm, CommentCreateForm
 from users.models import User
 
 # Kind of a mess right now will fix it up better later
@@ -117,6 +117,17 @@ class AuthModalMixin:
             post = Post.objects.get(pk=pk)
             post.delete()
             return redirect('blog-homepage')
+        
+        if request.POST.get('submit') == 'comment':
+            post = Post.objects.get(pk=pk)
+            comment_form_fill = CommentCreateForm(request.POST)
+            if comment_form_fill.is_valid():
+                comment = comment_form_fill.save(commit=False)
+                comment.author = request.user
+                comment.post = post            
+                comment.save()
+                return redirect('blog-postdetail', pk=pk)
+
 
 class Home(AuthModalMixin, ListView):
     
@@ -124,6 +135,7 @@ class Home(AuthModalMixin, ListView):
     template_name = 'blog/home.html'
     view_name = 'blog-homepage'
     context_object_name = 'posts'
+    paginate_by = 5
     # ordering = ['-date_posted']
     
     def get_context_data(self, **kwargs):
@@ -238,8 +250,28 @@ class PostDetail(AuthModalMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context["reg_form"] = self.reg_form
         context["login_form"] = self.login_form
+        context["comment_form"] = CommentCreateForm()
         return context
+
+class ViewProfile(AuthModalMixin, View):
     
+    template_name = 'blog/view_profile.html'
+    view_name = 'blog-viewprofile'
+    
+    def get(self, request, *args, **kwargs):
+        
+        view_username = self.kwargs.get('username')
+        view_user = get_object_or_404(User, username=view_username)
+        user_posts = Post.objects.filter(author=view_user)
+        
+        context = {
+            'view_user' : view_user,
+            'user_posts': user_posts,
+            'reg_form': self.reg_form,
+            'login_form': self.login_form,
+        }
+        
+        return render(request, self.template_name, context)
     # def post(self, request, *args, **kwargs):
     #     detail_object = self.get_object()
     #     pk = self.kwargs.get('pk')
@@ -290,25 +322,6 @@ class PostDetail(AuthModalMixin, DetailView):
     #         logout(request)
     #         return redirect(self.view_name, pk=pk)
 
-class ViewProfile(AuthModalMixin, View):
-    
-    template_name = 'blog/view_profile.html'
-    view_name = 'blog-viewprofile'
-    
-    def get(self, request, *args, **kwargs):
-        
-        view_username = self.kwargs.get('username')
-        view_user = get_object_or_404(User, username=view_username)
-        user_posts = Post.objects.filter(author=view_user)
-        
-        context = {
-            'view_user' : view_user,
-            'user_posts': user_posts,
-            'reg_form': self.reg_form,
-            'login_form': self.login_form,
-        }
-        
-        return render(request, self.template_name, context)
 # class Home(View):
     
 #     template_name = 'blog/home.html'

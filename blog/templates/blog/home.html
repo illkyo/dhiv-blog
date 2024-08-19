@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
+
   {% for post in posts %}
   <article class="media content-section d-flex">
     <img class="rounded-circle article-img border border-secondary flex-shrink-0 align-self-start" src="{{ post.author.profile.image.url }}">
@@ -19,11 +20,10 @@
         <small class="text-muted">{{ post.date_posted|format_date }}</small>
       </div>
       <h2 class="my-3"><a class="article-title" href={% url 'blog-postdetail' post.pk %}>{{ post.title }}</a></h2>
-      <p class="article-content">{{ post.content }}</p>
+      <p class="article-content">{{ post.content|truncatewords:50 }}</p>
     </div>
   </article>
   {% endfor %}
-{% comment %} {% block content %}
-  <h1>މައި ޞަފްޙާ</h1> {% endcomment %}
+
 {% endblock content %}
     

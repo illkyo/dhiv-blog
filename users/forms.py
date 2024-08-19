@@ -1,8 +1,8 @@
 from django.utils.translation import gettext_lazy as _
 from django import forms
-from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UsernameField
 from .models import User, Profile
+from blog.models import Comment
 
 class CustomUsernameField(UsernameField):
 
@@ -35,7 +35,7 @@ class RegisterForm(UserCreationForm):
       label=_("ޕާސްވޯރޑް ޔަގީން ކޮއްލެވުމަށް"),
       widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
       strip=False,
-      help_text=_("ކުރިން ޖެއްސެވި ޕާސްވޯރޑް ޖައްސަވާލައްވާ"),
+      help_text=_("ކުރިން ޖެއްސެވި ޕާސްވޯރޑް ޖައްސަވާލައްވާ"), 
   )
     
     error_messages = {
@@ -64,7 +64,7 @@ class LoginForm(AuthenticationForm):
     }
  
 class UserUpdateForm(forms.ModelForm):
-    
+
 	class Meta:
 		model = User
 		fields = ['username']
@@ -80,5 +80,17 @@ class ProfileUpdateForm(forms.ModelForm):
         model = Profile
         exclude = ['user']
         widgets = {
-			'bio': forms.Textarea(),
-		}
+			      'bio': forms.Textarea(),
+		    }
+        
+class CommentCreateForm(forms.ModelForm):
+    
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content' : forms.Textarea(attrs={'placeholder': 'ކޮމެންޓެއް ލިޔުއްވުމަށް ...', 'class': 'comment-box'})
+        }
+        labels = {
+            'content': ''
+        }

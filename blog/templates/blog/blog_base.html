@@ -193,6 +193,27 @@
         </div>
         {% endif %}
       </div>
+      {% if is_paginated %}
+      <div class="sticky-paginator mx-3">
+      {% if page_obj.has_previous %}
+        <a class="btn btn-sm rounded-4 btn-outline-secondary mb-2" href="?page=1">ފުރަތަމަ ޞަފްޙާ</a>
+        <a class="btn btn-sm rounded-4 btn-outline-secondary mb-2" href="?page={{ page_obj.previous_page_number }}">ކުރީ ޞަފްޙާ</a>
+      {% endif %}
+    
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <a class="btn btn-sm rounded-4 btn-secondary mb-2" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <a class="btn btn-sm rounded-4 btn-outline-secondary mb-2" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}    
+      {% endfor %}
+    
+      {% if page_obj.has_next %}
+        <a class="btn btn-sm rounded-4 btn-outline-secondary mb-2" href="?page={{ page_obj.next_page_number }}">ދެން އޮތް ޞަފްޙާ</a>
+        <a class="btn btn-sm rounded-4 btn-outline-secondary mb-2" href="?page={{ page_obj.paginator.num_pages }}">ފަހު ޞަފްޙާ</a>
+      {% endif %}
+      </div>
+      {% endif %}
     </div>
   </div>
 </main>

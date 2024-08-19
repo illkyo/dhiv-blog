@@ -24,6 +24,7 @@
         {% endif %}
         <small class="text-muted">{{ post.date_posted|format_date }}</small>
       </div>
+      
       <h2 class="my-3 article-title">{{ post.title }}</h2>
       <p class="article-content">{{ post.content }}</p>
       {% comment %} {% if request.user == post.author %}
@@ -34,4 +35,31 @@
       {% endif %} {% endcomment %}
     </div>
   </article>
+
+  <article class="media content-section">
+
+    {% if user.is_authenticated %}
+    <form method=POST class="d-flex flex-row justify-content-evenly">
+      {% csrf_token %}
+      {{ comment_form }}
+      <button class="btn btn-danger align-self-center" type="submit" name="submit" value="comment">ކޮމެންޓް</button>
+    </form>
+    {% endif %}
+
+    {% for comment in post.comments.all %}
+    <div class="media body me-4 mt-4 d-flex flex-column" style="margin-left:95px;">
+      <div class="article-metadata">
+        {% if user == comment.author %}
+        <a href={% url 'users-profilepage' %}>{{ comment.author }}</a>
+        {% else %}
+        <a href={% url 'blog-viewprofile' comment.author.username %}>{{ comment.author }}</a>
+        {% endif %}
+        <small class="text-muted">{{ comment.date_posted|format_date }}</small>
+      </div>
+      <p class="article-content">{{ comment.content }}</p>
+    </div>
+    {% endfor %}
+
+  </article>
+
 {% endblock content %}

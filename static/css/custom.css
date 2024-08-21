@@ -76,6 +76,71 @@ ul {
   margin-bottom: 20px;
 } */
 
+/* .comment-icon {
+  color: red;
+} */
+
+.comment-icon:hover {
+  color: greenyellow;
+}
+
+.like-button {
+  background: none;
+  color: red;
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.like-button:hover {
+  color: greenyellow;
+}
+
+.comment-box {
+  width: 700px;
+  height: 100px;
+  padding: 12px 50px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 35px;
+  background-color: #fff2f2;
+  resize: none;
+}
+
+/* There are better ways to do this, this works for now */
+@media (min-width: 200px) {
+  .comment-box {
+    width: 200px;
+  }
+}
+
+@media (min-width: 800px) {
+  .comment-box {
+    width: 300px;
+  }
+}
+
+@media (min-width: 1000px) {
+  .comment-box {
+    width: 400px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .comment-box {
+    width: 600px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .comment-box {
+    width: 700px;
+  }
+}
+
 .sticky-paginator {
   position: sticky;
   top: 60px;
@@ -129,27 +194,16 @@ a.article-title:hover {
   border-bottom: 1px solid #e3e3e3;
 }
 
-.article-svg {
+/* .article-svg {
   width: 25px;
   height: 25px;
   vertical-align: middle;
-}
+} */
 
 .account-img {
   height: 125px;
   width: 125px;
   margin: 40px 0 16px 0;
-}
-
-.comment-box {
-  width: 700px;
-  height: 100px;
-  padding: 12px 50px;
-  box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 35px;
-  background-color: #fff2f2;
-  resize: none;
 }
 
 .detail-button {

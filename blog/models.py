@@ -10,6 +10,7 @@ class Post(models.Model):
   title = models.CharField(max_length = 100, verbose_name="ޕޯސްޓް ޓައިޓަލް")
   content = models.TextField(verbose_name="ޕޯސްޓް ކޮންޓެންޓް")
   date_posted = models.DateTimeField(default=timezone.now)
+  likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts', blank=True)
   
   class Meta:
     ordering = ['-date_posted']
@@ -25,6 +26,9 @@ class Comment(models.Model):
   post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
   content = models.TextField(max_length = 150, verbose_name="ކޮމެންޓް ކޮންޓެންޓް")
   date_posted = models.DateTimeField(default=timezone.now)
+
+  class Meta:
+    ordering = ['-date_posted']
 
   def __str__(self):
     return f"{self.author}'s comment on {self.post.title}"

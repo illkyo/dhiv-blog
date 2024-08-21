@@ -127,6 +127,19 @@ class AuthModalMixin:
                 comment.post = post            
                 comment.save()
                 return redirect('blog-postdetail', pk=pk)
+            
+        if request.POST.get('submit') == 'like':
+            post = Post.objects.get(pk=pk)
+            user_exists = post.likes.filter(username=request.user.username).exists()
+
+            if user_exists:
+                post.likes.remove(request.user)
+            else:
+                post.likes.add(request.user)
+
+            # url = reverse(self.view_name, kwargs=kwargs if kwargs else {})
+            # return redirect(url)
+            return redirect('blog-postdetail', pk=pk)
 
 
 class Home(AuthModalMixin, ListView):
@@ -136,7 +149,6 @@ class Home(AuthModalMixin, ListView):
     view_name = 'blog-homepage'
     context_object_name = 'posts'
     paginate_by = 5
-    # ordering = ['-date_posted']
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -246,12 +258,24 @@ class PostDetail(AuthModalMixin, DetailView):
     view_name = 'blog-postdetail'
     context_object_name = 'post'
 
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["reg_form"] = self.reg_form
         context["login_form"] = self.login_form
         context["comment_form"] = CommentCreateForm()
+
+        user = self.request.user
+        post = self.get_object()
+        user_exists = post.likes.filter(username=user.username).exists()
+
+        if user_exists:
+            context["user_exists"] = user_exists
+        else:
+            context["user_exists"] = False
+
         return context
+    
 
 class ViewProfile(AuthModalMixin, View):
     

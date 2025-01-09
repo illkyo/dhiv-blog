@@ -10,16 +10,16 @@ Upon installation, change directory to the location where this project is locate
 
 # Features
 ## Home
-![alt text](https://github.com/illkyo/dhiv-blog/blob/main/pics/home.png)
+![alt text](https://github.com/illkyo/dhiv-blog/blob/master/pics/home.png)
 ## About
-![alt text](https://github.com/illkyo/dhiv-blog/blob/main/pics/about.JPG)
+![alt text](https://github.com/illkyo/dhiv-blog/blob/master/pics/about.JPG)
 ## Login
-![alt text](https://github.com/illkyo/dhiv-blog/blob/main/pics/login.JPG)
+![alt text](https://github.com/illkyo/dhiv-blog/blob/master/pics/login.JPG)
 ## Register
-![alt text](https://github.com/illkyo/dhiv-blog/blob/main/pics/register.JPG)
+![alt text](https://github.com/illkyo/dhiv-blog/blob/master/pics/register.JPG)
 ## Profile
-![alt text](https://github.com/illkyo/dhiv-blog/blob/main/pics/profile.png)
+![alt text](https://github.com/illkyo/dhiv-blog/blob/master/pics/profile.png)
 ## Post Creation
-![alt text](https://github.com/illkyo/dhiv-blog/blob/main/pics/post-create.JPG)
+![alt text](https://github.com/illkyo/dhiv-blog/blob/master/pics/post-create.JPG)
 ## Post Details
-![alt text](https://github.com/illkyo/dhiv-blog/blob/main/pics/post-detail.png)
+![alt text](https://github.com/illkyo/dhiv-blog/blob/master/pics/post-detail.png)
